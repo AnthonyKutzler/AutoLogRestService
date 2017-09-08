@@ -1,0 +1,1 @@
+Needs a SQL Table(MySQL) with the format of name(VARCHAR, PK), street(VARCHAR, NOT NULL), city(VARCHAR, NOT NULL), state(VARCHAR, NOT NULL), routeNumber(INTEGER, NOT NULL), stopNumber(INTEGER), xcordinate(REAL, NOT NULL) yCordinate(REAL, NOT NULL)
