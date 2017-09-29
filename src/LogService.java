@@ -47,7 +47,6 @@ public class LogService {
     }
     @POST
     @Path("/postLogs")
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response.ResponseBuilder setLogs(Map<String, String> logs){
         try {

@@ -15,7 +15,7 @@ public class DatabaseHandler {
 
     public DatabaseHandler() throws SQLException{
         connection = new MariaDbDataSource("localhost", 3306, "QualityCater").
-                getConnection("root", "");
+                getConnection("", "");
         ifTablesExist();
     }
 
