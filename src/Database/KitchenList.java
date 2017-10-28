@@ -1,3 +1,7 @@
+package Database;
+
+import Database.DatabaseHandler;
+import Objects.Kitchen;
 import com.sun.istack.internal.Nullable;
 
 import javax.xml.bind.annotation.XmlSeeAlso;

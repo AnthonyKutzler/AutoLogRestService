@@ -27,5 +27,7 @@
     <orderEntry type="library" name="com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.0.4" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.2 - RESTful Web Service" level="application_server_libraries" />
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.2 - JSON Processing (JSR 353)" level="application_server_libraries" />
+    <orderEntry type="library" name="DatabaseConnection" level="application" />
+    <orderEntry type="library" name="junit:junit:4.12" level="application" />
   </component>
 </module>

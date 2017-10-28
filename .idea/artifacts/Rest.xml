@@ -19,6 +19,7 @@
           <element id="library" level="application" name="com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.0.2" />
           <element id="library" level="application" name="javax.ws.rs:javax.ws.rs-api:2.0" />
           <element id="library" level="application" name="com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.0.4" />
+          <element id="library" level="application" name="DatabaseConnection" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="RestService/web/Web" />

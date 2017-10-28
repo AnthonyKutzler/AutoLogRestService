@@ -1,3 +1,9 @@
+import Database.KitchenList;
+import Objects.Kitchen;
+import RestService.KitchenService;
+import RestService.LogService;
+import RestService.RouteService;
+import Security.TokenFilter;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 import javax.ws.rs.ApplicationPath;
@@ -13,12 +19,12 @@ public class MyApplicationPath extends Application{
     @Override
     public Set<Class<?>> getClasses() {
         HashSet h = new HashSet<Class<?>>();
-        h.add( KitchenService.class );
-        h.add( LogService.class);
-        h.add( RouteService.class);
-        h.add( Kitchen.class);
-        h.add( KitchenList.class);
-        h.add( TokenFilter.class);
+        h.add( RestService.KitchenService.class );
+        h.add( RestService.LogService.class);
+        h.add( RestService.RouteService.class);
+        h.add( Objects.Kitchen.class);
+        h.add( Database.KitchenList.class);
+        h.add( Security.TokenFilter.class);
         return h;
     }
 

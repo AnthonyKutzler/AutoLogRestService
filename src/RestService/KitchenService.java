@@ -1,3 +1,8 @@
+package RestService;
+
+import Database.KitchenList;
+import Objects.Kitchen;
+import Security.Secured;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -14,7 +19,7 @@ import java.util.List;
 public class KitchenService implements Serializable{
 
     /**
-     * Secured Method for returning List of all Kitchen Info stated above
+     * Security.Secured Method for returning List of all Objects.Kitchen Info stated above
      * @return JSONArray
      */
     @Path("/kitchens")

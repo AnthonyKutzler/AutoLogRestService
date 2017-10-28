@@ -1,7 +1,9 @@
+package Database;
+
 /**
  * Created by gob on 6/16/17.
  */
-public interface DatabaseFinals {
+public interface SqlStatements {
     /**
      * SQL TABLE NAMES
      */

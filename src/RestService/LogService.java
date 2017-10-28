@@ -1,10 +1,20 @@
+package RestService;
+
+import Database.DatabaseHandler;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import Objects.Log;
+import com.google.common.annotations.VisibleForTesting;
+import org.junit.Before;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertEquals;
 
 /**
  * Created by gob on 6/16/17.
@@ -48,18 +58,38 @@ public class LogService {
     @POST
     @Path("/postLogs")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response.ResponseBuilder setLogs(Map<String, String> logs){
+    @Produces(MediaType.TEXT_PLAIN)
+    public String setLogs(Map<String, String> logs){
+        String response = "";
         try {
             DatabaseHandler database = new DatabaseHandler();
             //get UserID from RouteNumber, getRouteNumber from First stop name
-            String userid = database.getUserFromRouteNumber(database.getRouteNumberFromKitchen(logs.get(0)));
+            String userid = "zz";//database.getUserFromRouteNumber(database.getRouteNumberFromKitchen(logs.get(0)));
             for(Map.Entry<String, String> timeLog : logs.entrySet()) {
-                new DatabaseHandler().setTempLogs(timeLog.getKey(), (new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance())),
+                new DatabaseHandler().setTempLogs(timeLog.getKey(), (Calendar.getInstance().getTime().toString()),
                         timeLog.getValue(), userid);
             }
+            response = "ok";
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Response.status(200);
+        return response;
     }
+
+/*
+    Map<String, String> map;
+    @Before
+    public void fillMap(){
+        map = new HashMap<>();
+        map.put("Weeble", "17:45");
+        map.put("Bach", "15:38");
+    }
+
+    @Test
+    public void testLogPost(){
+        String response = setLogs(map);
+        assertEquals(response, "ok");
+
+    }
+*/
 }

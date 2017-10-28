@@ -1,39 +1,44 @@
+package Database;
+
 import org.mariadb.jdbc.MariaDbDataSource;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import org.DB.DatabaseConnection;
+
+import Objects.*;
 
 /**
  * Created by gob on 6/16/17.
  */
-public class DatabaseHandler {
+public class DatabaseHandler extends DatabaseConnection implements SqlStatements {
 
-    Connection connection;
-    PreparedStatement preparedStatement;
+    private Connection connection;
+    private PreparedStatement preparedStatement;
 
 
     public DatabaseHandler() throws SQLException{
-        connection = new MariaDbDataSource("localhost", 3306, "QualityCater").
-                getConnection("", "");
+        super("QualityCater");
+        connection = super.connection;
         ifTablesExist();
     }
 
     public DatabaseHandler(String hostname, String database, int port, String username,
                            String password) throws SQLException{
-        connection = new MariaDbDataSource(hostname, port, database).
-                getConnection(username, password);
+        super(hostname, port, database,username,password);
+        connection = super.connection;
         ifTablesExist();
     }
     private void ifTablesExist() throws SQLException{
         if (!tableExists("kitchens"))
-            connection.nativeSQL(DatabaseFinals.CREATE_KITCHENS_TABLE);
+            connection.nativeSQL(CREATE_KITCHENS_TABLE);
         if (!tableExists("logs"))
-            connection.nativeSQL(DatabaseFinals.CREATE_LOGS_TABLE);
+            connection.nativeSQL(CREATE_LOGS_TABLE);
     }
     private boolean tableExists(String table){
         try{
-            preparedStatement = (connection.prepareStatement(DatabaseFinals.TABLE_EXISTS));
+            preparedStatement = (connection.prepareStatement(TABLE_EXISTS));
             preparedStatement.setString(1, table);
             preparedStatement.execute();
             return true;
@@ -44,7 +49,7 @@ public class DatabaseHandler {
 
     public List<Log> getTempLogs() throws SQLException{
         List<Log> logs = new ArrayList<>();
-        ResultSet resultSet = connection.prepareStatement(DatabaseFinals.SELECT_LOGS).executeQuery();
+        ResultSet resultSet = connection.prepareStatement(SELECT_LOGS).executeQuery();
         if(resultSet.first()){
             do{
                 logs.add(new Log(resultSet.getDate("date"), resultSet.getString("name"),
@@ -64,8 +69,8 @@ public class DatabaseHandler {
      */
     public List<Log> getTempLogsWhere(String where, String equals) throws Exception{
         List<Log> logs = new ArrayList<>();
-        preparedStatement = connection.prepareStatement(DatabaseFinals.SELECT_LOGS_WHERE);
-        preparedStatement.setString(1, DatabaseFinals.LOGS_TABLE_NAME);
+        preparedStatement = connection.prepareStatement(SELECT_LOGS_WHERE);
+        preparedStatement.setString(1, LOGS_TABLE_NAME);
         preparedStatement.setString(2, where);
         preparedStatement.setString(3, equals);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -79,17 +84,15 @@ public class DatabaseHandler {
         return logs;
     }
     public String getRouteNumberFromKitchen(String name) throws SQLException{
-        preparedStatement = connection.prepareStatement(DatabaseFinals.SELECT_ROUTE_KITCHEN);
-        //for testing
-        name = "Lee";
+        preparedStatement = connection.prepareStatement(SELECT_ROUTE_KITCHEN);
         preparedStatement.setString(1, name);
         ResultSet resultSet = preparedStatement.executeQuery();
         resultSet.first();
         return String.valueOf(resultSet.getInt(1));
     }
     public String getUserFromRouteNumber(String routeNumber) throws SQLException{
-        preparedStatement = connection.prepareStatement(DatabaseFinals.SELECT_USERID_SCHEDULE);
-        preparedStatement.setString(1, (new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance())));
+        preparedStatement = connection.prepareStatement(SELECT_USERID_SCHEDULE);
+        preparedStatement.setString(1, (Calendar.getInstance().toString()));
         ResultSet resultSet = preparedStatement.executeQuery();
         ResultSetMetaData metaData = resultSet.getMetaData();
         resultSet.first();
@@ -107,7 +110,7 @@ public class DatabaseHandler {
         ////////////////////////////////////////////////
         ///////////////////////////////////////////////
         //////PARSE JSON and Add each OBJ to TABLE
-        preparedStatement = connection.prepareStatement(DatabaseFinals.INSERT_LOGS);
+        preparedStatement = connection.prepareStatement(Database.SqlStatements.INSERT_LOGS);
         preparedStatement.setDate(1, new Date(Long.parseLong(LocalDate.now().toString())));
         preparedStatement.setString(2, json.getString("name"));
         preparedStatement.setTime(3, (Time.valueOf(json.getString("time"))));
@@ -116,13 +119,13 @@ public class DatabaseHandler {
     }*/
 
     /**
-     * Returns List of all Kitchen information
+     * Returns List of all Objects.Kitchen information
      * @return
      * @throws SQLException
      */
     public List<Kitchen> getKitchensInformation() throws SQLException{
         List<Kitchen> kitchens = new ArrayList<Kitchen>();
-        preparedStatement = connection.prepareStatement(DatabaseFinals.KITCHEN_SELECT);
+        preparedStatement = connection.prepareStatement(KITCHEN_SELECT);
         ResultSetMetaData data = preparedStatement.getMetaData();
         Object[] contructorVars = new Object[data.getColumnCount()];
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -147,7 +150,7 @@ public class DatabaseHandler {
                     }
                 }
                 kitchens.add(new Kitchen(contructorVars));
-                /*kitchens.add(new Kitchen(resultSet.getString("name"),
+                /*kitchens.add(new Objects.Kitchen(resultSet.getString("name"),
                         (resultSet.getString("street") + ", " + resultSet.getString("city") +
                         ", " + resultSet.getString("state")), null, resultSet.getInt("routeNumber"),
                         resultSet.getInt("stopNumber"), resultSet.getDouble("xCord"),
@@ -157,8 +160,13 @@ public class DatabaseHandler {
         return kitchens;
 
     }
-    public void setTempLogs(String name, String date, String time, String userid){
-        //TODO: setup
+    public void setTempLogs(String name, String date, String time, String userid) throws SQLException{
+            preparedStatement = connection.prepareStatement(INSERT_LOGS);
+            preparedStatement.setString(1, date);
+            preparedStatement.setString(2, name);
+            preparedStatement.setString(3, time);
+            preparedStatement.executeUpdate();
+
     }
 
 
@@ -167,7 +175,7 @@ public class DatabaseHandler {
     }
     public int getRouteNumber(String date, String userid){
         try {
-            preparedStatement = connection.prepareStatement("SELECT " + userid + DatabaseFinals.SELECT_ROUTE_SPECIFIC);
+            preparedStatement = connection.prepareStatement("SELECT " + userid + SELECT_ROUTE_SPECIFIC);
             preparedStatement.setString(1, date);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.first();
@@ -180,11 +188,11 @@ public class DatabaseHandler {
     }
     public LinkedList<Integer> getSchedule(String date) throws SQLException{
         LinkedList<Integer> list = new LinkedList<>();
-        preparedStatement = connection.prepareStatement(DatabaseFinals.SELECT_ROUTE_SPECIFIC);
+        preparedStatement = connection.prepareStatement(SELECT_ROUTE_SPECIFIC);
         preparedStatement.setString(1, date);
         ResultSet resultSet = preparedStatement.executeQuery();
         if(resultSet.first()) {
-            for(int z = 1; z <= DatabaseFinals.SCEDULE_COULUMN_COUNT; z++){
+            for(int z = 1; z <= SqlStatements.SCEDULE_COULUMN_COUNT; z++){
                 list.add(resultSet.getInt(z));
             }
         }

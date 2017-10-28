@@ -1,3 +1,7 @@
+package RestService;
+
+import Database.DatabaseHandler;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.SQLException;
@@ -6,7 +10,7 @@ import java.util.LinkedList;
 /**
  * Created by gob on 6/18/17.
  */
-@Path("/RouteService")
+@Path("/RestService.RouteService")
 public class RouteService {
 
     @GET
